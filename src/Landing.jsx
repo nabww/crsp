@@ -4,8 +4,8 @@ import Tab from '@mui/material/Tab';
 // import div from '@mui/material/div';
 import TabPanel from '@mui/lab/TabPanel';
 import TabContext from '@mui/lab/TabContext';
-import App from './App';
 import './App.css'
+import App from './App';
 
 
 export default function Landing() {

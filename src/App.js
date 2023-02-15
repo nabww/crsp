@@ -1,6 +1,6 @@
 // import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const App = () => {
   const [crsp, setCRSP] = useState(0);
@@ -16,6 +16,7 @@ const App = () => {
   const [rdlLevy, setRdlLevy] = useState(0);
   const [idfLevy, setIdfLevy] = useState(0);
   const [totalDuty, setTotalDuty] = useState(0);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const IDF = 0.035,
     RDL = 0.02;
   const importDuty = 0.25;
@@ -49,23 +50,42 @@ const App = () => {
     return Dep;
   }
 
-  const getDuty = () => {
+  const handleSubmit = () => {
     depreciation();
-    setCustomsValue(((crsp / 1.25) * (1 - Dep / 100)) / 1.25 / 1.2 / 1.16);
-    setDuty(importDuty * customsValue);
-    setExciseValue(Math.round(duty + customsValue));
-    setExciseDuty(Math.round((customsValue + duty) * 0.2));
-    setVatValue(Math.round(customsValue + duty + exciseDuty));
-    setVat(Math.round(0.16 * vatValue));
-    setIdfLevy(Math.round(customsValue * IDF));
-    setRdlLevy(Math.round(customsValue * RDL));
-    setTotalDuty(Math.round(duty + exciseDuty + vat + idfLevy + rdlLevy));
-    setLandingCost(Math.round(totalDuty + customsValue));
+    setIsSubmitting(true);
   };
 
-  const handleSubmit = () => {
-    getDuty();
-  };
+  useEffect(() => {
+    if (isSubmitting) {
+      const calculateDuty = () => {
+        const customsValue =
+          ((crsp / 1.25) * (1 - Dep / 100)) / 1.25 / 1.2 / 1.16;
+        const duty = importDuty * customsValue;
+        const exciseDuty = Math.round((customsValue + duty) * 0.2);
+        const vatValue = Math.round(customsValue + duty + exciseDuty);
+        const vat = Math.round(0.16 * vatValue);
+        const exciseValue = Math.round(duty + customsValue);
+        const idfLevy = Math.round(customsValue * IDF);
+        const rdlLevy = Math.round(customsValue * RDL);
+        const totalDuty = Math.round(
+          duty + exciseDuty + vat + idfLevy + rdlLevy
+        );
+        const landingCost = Math.round(totalDuty + customsValue);
+        setCustomsValue(customsValue);
+        setDuty(duty);
+        setExciseValue(exciseValue);
+        setExciseDuty(exciseDuty);
+        setVatValue(vatValue);
+        setVat(vat);
+        setIdfLevy(idfLevy);
+        setRdlLevy(rdlLevy);
+        setTotalDuty(totalDuty);
+        setLandingCost(landingCost);
+      };
+      calculateDuty();
+      setIsSubmitting(false);
+    }
+  }, [crsp, Dep, importDuty, IDF, RDL, isSubmitting]);
 
   return (
     <div className="container">
