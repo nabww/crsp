@@ -24,7 +24,9 @@ const App = () => {
   function depreciation() {
     const currentYear = new Date().getFullYear();
     const age = currentYear - YOM;
-    if (YOM == null) {
+    if (!crsp) {
+      alert(`Please select a vehicle from the list`);
+    } else if (YOM == null) {
       alert("Please Enter YOM");
     } else if (YOM >= currentYear) {
       setDep(0);
@@ -116,14 +118,28 @@ const App = () => {
           <option selected disabled>
             --Select YOM--
           </option>
-          <option value={2023}>2023</option>
-          <option value={2022}>2022</option>
-          <option value={2021}>2021</option>
-          <option value={2020}>2020</option>
-          <option value={2019}>2019</option>
-          <option value={2018}>2018</option>
-          <option value={2017}>2017</option>
-          <option value={2016}>2016</option>
+          <option value={new Date().getFullYear()}>2023</option>
+          <option value={new Date().getFullYear() - 1}>
+            {new Date().getFullYear() - 1}
+          </option>
+          <option value={new Date().getFullYear() - 2}>
+            {new Date().getFullYear() - 2}
+          </option>
+          <option value={new Date().getFullYear() - 3}>
+            {new Date().getFullYear() - 3}
+          </option>
+          <option value={new Date().getFullYear() - 4}>
+            {new Date().getFullYear() - 4}
+          </option>
+          <option value={new Date().getFullYear() - 5}>
+            {new Date().getFullYear() - 5}
+          </option>
+          <option value={new Date().getFullYear() - 6}>
+            {new Date().getFullYear() - 6}
+          </option>
+          <option value={new Date().getFullYear() - 7}>
+            {new Date().getFullYear() - 7}
+          </option>
         </select>
       </div>
       <div className="col-text-center mb-3">
