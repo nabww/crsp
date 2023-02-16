@@ -1,11 +1,8 @@
-// import "./App.css";
-import "bootstrap/dist/css/bootstrap.min.css";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
-const App = () => {
-  const [crsp, setCRSP] = useState(0);
+function InvoiceCompute() {
+  const [crsp, setCRSP] = useState();
   const [YOM, setYOM] = useState();
-  const [Dep, setDep] = useState();
   const [LandingCost, setLandingCost] = useState(0);
   const [customsValue, setCustomsValue] = useState(0);
   const [duty, setDuty] = useState(0);
@@ -21,45 +18,10 @@ const App = () => {
     RDL = 0.02;
   const importDuty = 0.25;
 
-  function depreciation() {
-    const currentYear = new Date().getFullYear();
-    const age = currentYear - YOM;
-    if (YOM == null) {
-      alert("Please Enter YOM");
-    } else if (YOM >= currentYear) {
-      setDep(0);
-    } else if (YOM < currentYear - 7) {
-      alert(`Only Cars from ${currentYear - 7} can be imported!`);
-    } else {
-      if (age <= 2) {
-        setDep(15);
-      } else if (age <= 3) {
-        setDep(20);
-      } else if (age <= 4) {
-        setDep(30);
-      } else if (age <= 5) {
-        setDep(40);
-      } else if (age <= 6) {
-        setDep(50);
-      } else if (age <= 7) {
-        setDep(60);
-      } else if (age <= 8) {
-        setDep(70);
-      }
-    }
-    return Dep;
-  }
-
-  const handleSubmit = () => {
-    depreciation();
-    setIsSubmitting(true);
-  };
-
   useEffect(() => {
     if (isSubmitting) {
       const calculateDuty = () => {
-        const customsValue =
-          ((crsp / 1.25) * (1 - Dep / 100)) / 1.25 / 1.2 / 1.14;
+        const customsValue = parseInt(crsp);
         const duty = importDuty * customsValue;
         const exciseDuty = Math.round((customsValue + duty) * 0.2);
         const vatValue = Math.round(customsValue + duty + exciseDuty);
@@ -85,66 +47,40 @@ const App = () => {
       calculateDuty();
       setIsSubmitting(false);
     }
-  }, [crsp, Dep, importDuty, IDF, RDL, isSubmitting]);
+  }, [crsp, importDuty, IDF, RDL, isSubmitting]);
+
+  const validateInvoiceValue = () => {
+    if (!crsp) {
+      alert("Please Enter the Invoice Value");
+      console.log("Please Enter the Invoice Value");
+      console.log(crsp);
+    } else {
+      setIsSubmitting(true);
+    }
+  };
+
+  //Functions section
+  const handleSubmit = () => {
+    validateInvoiceValue();
+  };
 
   return (
     <div className="container">
-      {/* <div className="d-flex justify-content-center"></div> */}
-      <div className="form-group">
-        <label className="col-sm-4 col-form-label">Select Vehicle</label>
-        {/* <input className="" onChange={(e) => setCRSP(e.target.value)} />
-         */}
-        <select
-          className="form-select-sm col-sm-6"
-          onChange={(e) => setCRSP(e.target.value)}
-        >
-          <option selected disabled>
-            --Select Vehicle--
-          </option>
-          <option value={1755000}>Toyota Probox 1500cc 2WD</option>
-          <option>Car Two</option>
-          <option>Car Three</option>
-        </select>
+      <div className="col-form-group">
+        <label className="col-sm-3">Enter Invoice Value</label>
+        <input className="col-md-6" onChange={(e) => setCRSP(e.target.value)} />
       </div>
-      <div className="form-group mb-3">
-        <label className="col-sm-4 col-form-label">Year of Manufacture</label>
-        {/* <input onChange={(e) => setYOM(e.target.value)} /> */}
-        <select
-          className="form-select-sm col-sm-6"
-          onChange={(e) => setYOM(e.target.value)}
-        >
-          <option selected disabled>
-            --Select YOM--
-          </option>
-          <option value={2023}>2023</option>
-          <option value={2022}>2022</option>
-          <option value={2021}>2021</option>
-          <option value={2020}>2020</option>
-          <option value={2019}>2019</option>
-          <option value={2018}>2018</option>
-          <option value={2017}>2017</option>
-          <option value={2016}>2016</option>
-        </select>
-      </div>
+
       <div className="col-text-center mb-3">
         <button
           type="submit"
-          className="btn btn-outline-success mt-3"
+          className="btn btn-outline-dark mt-3"
           onClick={handleSubmit}
         >
           Compute Landing Cost
         </button>
       </div>
       <div className="form-group">
-        <div>
-          <label className="col-sm-6 col-form-label">Depreciation (%)</label>
-          <label className="col-md-6 text-warning mr-5">{Dep}%</label>
-        </div>
-        <div>
-          <label className="col-sm-6 col-form-label">CRSP</label>
-          <label className="col-sm-6 text-warning">{crsp}</label>
-        </div>
-
         <div>
           <label className="col-sm-6 col-form-label">Customs Value</label>
           <label className="col-md-6 text-warning">
@@ -218,6 +154,6 @@ const App = () => {
       </div>
     </div>
   );
-};
+}
 
-export default App;
+export default InvoiceCompute;
